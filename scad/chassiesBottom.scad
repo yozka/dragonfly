@@ -9,6 +9,25 @@ include <vitamins/screws.scad>
 
 
 
+/* //===================================================================================*
+* //                                                                                    *
+* // отрисовка нижней части шасси внутрянка вырез										*
+* //------------------------------------------------------------------------------------*
+*///
+module chassiesBottomInside()
+{
+	iWidth = 120;
+	iHeight = 150;
+	
+	//chassiesBottomFull();
+	union()
+	{
+		translate([-iWidth/2, 0,0]) cube([iWidth, iHeight,15]);
+		translate([0,10,0]) scale(0.9) chassiesBottomFull();
+	}
+}
+//-------------------------------------------------------------------------------------//
+
 
 
 
@@ -21,91 +40,72 @@ include <vitamins/screws.scad>
 *///
 module chassiesBottomFull()
 {
-	iHeight = 150; //всего длина
-	iRadius = 8; //радиус боковин
-
-	iDepth = gcShassiesBottomDepth;
-	iDepthClips = gcShassiesBottomClips;
-
-	iFrontWidth		= 80; //ширина передней части
-	iFrontHeight	= 45; //длина передней части
-	iFrontEarsWidth = 9; //выступ ушей за пределы ширины
-	iFrontEarsTop	= 31; //расположение ушей относительно передней части
-	iFrontEarsInWidth = -20; //выступ внутренней стороны крепления;
-	iFrontEarsInTop = 7;
-
-
-	iRearWidth		= 80; //ширина задней части
-	iRearEarsWidth	= 20; //выступ ушей в ширину
-	iRearEarsBottom = 24; //отступ снизу
+	//chassiesBottom_clipsRaysFull();
 	
-
 	union()
 	{
-		//передняя часть
+		//верхнее крепление
 		hull()
 		{
-			//передняя часть
-			translate([-iFrontWidth/2, iHeight/2 - iFrontHeight, 0])cube([iFrontWidth, iFrontHeight, iDepth]);
+			1_clipsFront();
+			mirror([1,0,0])1_clipsFront();
+		}
 
-			//уши справа передней части
-			translate([ iFrontWidth/2, iHeight/2 - iRadius, 0])cylinder(r = iRadius, h = iDepth);
-			translate([ iFrontWidth/2 + iFrontEarsWidth, iHeight/2 - iFrontEarsTop, 0])cylinder(r = iRadius, h = iDepth);
-
-			//уши слева
-			translate([ -iFrontWidth/2, iHeight/2 - iRadius, 0])cylinder(r = iRadius, h = iDepth);
-			translate([ -iFrontWidth/2 - iFrontEarsWidth, iHeight/2 - iFrontEarsTop, 0])cylinder(r = iRadius, h = iDepth);
-		} 
-
-		//задняя часть
+					
+		//нижнее крепление
 		hull()
 		{
-			translate([-iRearWidth/2, -(iHeight / 2), 0])cube([iRearWidth, iHeight - iFrontHeight, iDepth]);
-
-			//уши справа
-			translate([ iRearWidth/2, -iHeight/2 + iRadius, 0])cylinder(r = iRadius, h = iDepth);
-			translate([ iRearWidth/2 + iRearEarsWidth, -iHeight/2 + iRearEarsBottom , 0])cylinder(r = iRadius, h = iDepth);
-
-			//уши слева
-			translate([ -iRearWidth/2, -iHeight/2 + iRadius, 0])cylinder(r = iRadius, h = iDepth);
-			translate([ -iRearWidth/2 - iRearEarsWidth, -iHeight/2 + iRearEarsBottom , 0])cylinder(r = iRadius, h = iDepth);
-
+			1_clipsRear();
+			mirror([1,0,0]) 1_clipsRear();
+			
+			translate([-gcShassiesBottom_frontWidth / 2, gcShassiesBottom_front, -gcRayClips_depth / 2]) cube([gcShassiesBottom_frontWidth, 10, gcRayClips_depth]);
 		}
-
-		//
-		//крепления
-		//
-		translate([0,0,iDepth])
-		union()
-		{
-			//верхняя часть
-			hull()
-			{
-				//уши справа передней части
-				translate([ iFrontWidth/2, iHeight/2 - iRadius, 0])cylinder(r = iRadius, h = iDepthClips);
-				translate([ iFrontWidth/2 + iFrontEarsWidth, iHeight/2 - iFrontEarsTop, 0])cylinder(r = iRadius, h = iDepthClips);
-
-				translate([ iFrontWidth/2 + iFrontEarsInWidth, iHeight/2 - iFrontEarsInTop -  iRadius, 0])cylinder(r = iRadius, h = iDepthClips);
-				translate([ iFrontWidth/2 + iFrontEarsInWidth + iFrontEarsWidth, iHeight/2 - iFrontEarsInTop - iFrontEarsTop - 4, 0])cylinder(r = iRadius, h = iDepthClips);
-			}
-
-			hull()
-			{
-				//шуи слева			
-				translate([ -iFrontWidth/2, iHeight/2 - iRadius, 0])cylinder(r = iRadius, h = iDepthClips);
-				translate([ -iFrontWidth/2 - iFrontEarsWidth, iHeight/2 - iFrontEarsTop, 0])cylinder(r = iRadius, h = iDepthClips);
-
-				translate([ -iFrontWidth/2 - iFrontEarsInWidth, iHeight/2 - iFrontEarsInTop -  iRadius, 0])cylinder(r = iRadius, h = iDepthClips);
-				translate([ -iFrontWidth/2 - iFrontEarsInWidth - iFrontEarsWidth, iHeight/2 - iFrontEarsInTop - iFrontEarsTop - 4, 0])cylinder(r = iRadius, h = iDepthClips);
-			}
-
-
-		}
-
 	}
-
 }
 //-------------------------------------------------------------------------------------//
+
+
+
+
+
+
+/* //===================================================================================*
+* //                                                                                    *
+* // передние крепление			              											*
+* //------------------------------------------------------------------------------------*
+*///
+module 1_clipsFront()
+{
+	//верхнее крепление
+		translate(gRaysFront())
+			rotate(gRaysFrontAngle())
+				rotate([0,0,90])translate([0, -gRaysFrontLength() - motorESC[1],0])
+					chassiesBottom_clipsRaysFull();
+}
+//-------------------------------------------------------------------------------------//
+
+
+
+
+
+/* //===================================================================================*
+* //                                                                                    *
+* // задние крепление			              											*
+* //------------------------------------------------------------------------------------*
+*///
+module 1_clipsRear()
+{
+	translate(gRaysRear())
+		rotate(gRaysRearAngle())
+			rotate([0,0,90])translate([0, -gRaysRearLength() - motorESC[1],0])
+				chassiesBottom_clipsRaysFull();
+}
+//-------------------------------------------------------------------------------------//
+
+
+
+
+
 
 
 
@@ -117,6 +117,7 @@ module chassiesBottomFull()
 * // выступ для фиксации верхней части	    											*
 * //------------------------------------------------------------------------------------*
 *///
+/*
 module chassies_rays()
 {
 	//верхний лучь
@@ -134,7 +135,7 @@ module chassies_rays()
 			{
 				translate([motorESC[1],0,0]) rotate([90,0,90]) cylinder(r=gcTube[0]/2, h = gRaysRearLength());
 			}
-}
+}*/
 //-------------------------------------------------------------------------------------//
 
 
@@ -147,16 +148,32 @@ module chassies_rays()
 
 /* //===================================================================================*
 * //                                                                                    *
-* // отрисовка крепления лучей			       											*
+* // отрисовка крепления лучей	без внутреннего выреза									*
 * //------------------------------------------------------------------------------------*
 *///
-module chassiesBottom_clipsRays()
+module chassiesBottom_clipsRaysFull()
 {
-	iWidth = 40;
-	iHeight = 30;
-	iDepth = gcShassiesBottomClips;
-
-	translate([-iWidth/2,-iHeight/2,0])cube([iWidth, iHeight, iDepth]);
+	iWidth 	= gcRayClips_width;
+	iHeight 	= gcRayClips_height;
+	iDepth 	= gcRayClips_depth;
+	iRadius	= gcRayClips_radius; //радиус закругления клипсы
+	
+	ix = iWidth / 2 - iRadius;
+	
+	iTop = -iDepth / 2;
+	
+	difference()
+	{
+	hull()
+	{
+		translate([-ix, iRadius, iTop]) cylinder(r = iRadius, h = iDepth);
+		translate([ ix, iRadius, iTop]) cylinder(r = iRadius, h = iDepth);
+		translate([-ix, iHeight - iRadius, iTop]) cylinder(r = iRadius, h = iDepth);
+		translate([ ix, iHeight - iRadius, iTop]) cylinder(r = iRadius, h = iDepth);
+	}
+	
+	translate([0, - 5, 0])rotate([0,90,90])cylinder(r=6, h =10);
+	}
 }
 //-------------------------------------------------------------------------------------//
 
@@ -171,6 +188,7 @@ module chassiesBottom_clipsRays()
 * // полная отрисовка всех креплений на шасси											*
 * //------------------------------------------------------------------------------------*
 *///
+/*
 module chassiesBottom_clipsRaysAll()
 {
 	translate([0,0, gcShassiesBottomClips])
@@ -194,7 +212,7 @@ module chassiesBottom_clipsRaysAll()
 				}
 	}
 
-}
+}*/
 //-------------------------------------------------------------------------------------//
 
 
@@ -208,9 +226,11 @@ module chassiesBottom_clipsRaysAll()
 * // крепление нижней и средней деки шасси												*
 * //------------------------------------------------------------------------------------*
 *///
+/*
 module chassies_mountScrews()
 {
 }
+*/
 //-------------------------------------------------------------------------------------//
 
 
@@ -224,9 +244,10 @@ module chassies_mountScrews()
 * // вырез отверстий под болты															*
 * //------------------------------------------------------------------------------------*
 *///
+/*
 module chassies_mountScrewsInside()
 {
-}
+}*/
 //-------------------------------------------------------------------------------------//
 
 
@@ -245,7 +266,7 @@ module chassies_mountScrewsInside()
 *///
 module chassiesBottom()
 {
-	difference()
+	translate([0,0, gcShassiesBottom_depth])difference()
 	{
 		union()
 		{
@@ -255,13 +276,7 @@ module chassiesBottom()
 		}
 		
 		
-		//направляющие лучи
-		translate([0,-gcShassiesBottomRearIndent, gcShassiesBottomClips])
-		union()
-		{
-			chassies_rays();
-			mirror([1,0,0]) chassies_rays();
-		}
+		chassiesBottomInside();
 		
 	}
 }

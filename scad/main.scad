@@ -109,7 +109,7 @@ union()
 	
 	
 	
-	translate([0,gcShassiesBottomRearIndent, -gcShassiesBottomClips])
+	translate([0, 0, -gcShassiesBottom_depth])
 	chassiesBottom();
 	
 	

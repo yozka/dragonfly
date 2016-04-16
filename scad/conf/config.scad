@@ -58,23 +58,34 @@ gcThicknessSupport = 3; //толщина поддержки крепления
 //передние
 function gRaysFront()			= [gcRotorFrontWidth / 2, gcRotorLength / 2, 0]; //местоположение начало луча
 function gRaysFrontAngle()		= [0,0,180 + 21];//поворот луча
-function gRaysFrontLength()		= 160;//размер переднего карбонового луча
+function gRaysFrontLength()		= 170;//размер переднего карбонового луча
 
 //задние
 function gRaysRear()			= [gcRotorRearWidth / 2, -gcRotorLength / 2, 0]; //местоположение начало луча
 function gRaysRearAngle()		= [0,0,180 - 51];//поворот луча
-function gRaysRearLength()		= 245;//размер задняго карбонового луча
+function gRaysRearLength()		= 260;//размер задняго карбонового луча
 
 
 
+
+//
+// клипса крепления луча
+//
+gcRayClips_depth		= gcTube[0] + 3 + 3; //высота крепления клипс
+gcRayClips_width		= 30; //ширина клипсы
+gcRayClips_height  	= 40; //длина клипсы
+gcRayClips_radius 	= 10; //радиус закругления клипсы
 
 
 //
 // нижняя часть шасси
 //
-gcShassiesBottomDepth		= 9; //высота шасси
-gcShassiesBottomRearIndent	= 75; //отступ нижней шасси от середины
-gcShassiesBottomClips		= 9; //высота крепления клипс
+gcShassiesBottom_depth		= gcRayClips_depth / 2; //высота шасси
+gcShassiesBottom_front		= 100; //отступ передней части
+gcShassiesBottom_frontWidth	= 60; //ширина шасси переднего 
+
+
+
 
 
 //
