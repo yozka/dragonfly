@@ -82,28 +82,16 @@ module render_rays()
 union()
 {
 	
-	/*
-	difference()
-	{
-		union()
-		{
-			translate([0,0, -bracketHeightMount()/2]) print_bracketMotorsBottom();
-			print_bracketMotorsTop();
-		}
-		//#translate([-20,0,0])cube([100,50,50]);
-	}
-	*/
-
 
 /*
 	print_bracketMotorsBottom();
 	translate([0,-50,0]) print_bracketMotorsTop();
 */
 
-
+	print_chassiesBottom();
 	
 	//отрисовка лучей с моторами
-	
+	/*
 	render_rays();
 	mirror([1,0,0]) render_rays();
 	
@@ -111,7 +99,7 @@ union()
 	
 	translate([0, 0, -gcShassiesBottom_depth])
 	chassiesBottom();
-	
+	*/
 	
 	
 	

@@ -83,7 +83,7 @@ gcRayClips_radius 	= 10; //радиус закругления клипсы
 gcShassiesBottom_depth		= gcRayClips_depth / 2; //высота шасси
 gcShassiesBottom_front		= 100; //отступ передней части
 gcShassiesBottom_frontWidth	= 60; //ширина шасси переднего 
-
+gcShassiesBottom_thickness	= 3;
 
 
 

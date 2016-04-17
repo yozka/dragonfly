@@ -9,29 +9,6 @@ include <vitamins/screws.scad>
 
 
 
-/* //===================================================================================*
-* //                                                                                    *
-* // отрисовка нижней части шасси внутрянка вырез										*
-* //------------------------------------------------------------------------------------*
-*///
-module chassiesBottomInside()
-{
-	iWidth = 120;
-	iHeight = 150;
-	
-	//chassiesBottomFull();
-	union()
-	{
-		translate([-iWidth/2, 0,0]) cube([iWidth, iHeight,15]);
-		translate([0,10,0]) scale(0.9) chassiesBottomFull();
-	}
-}
-//-------------------------------------------------------------------------------------//
-
-
-
-
-
 
 /* //===================================================================================*
 * //                                                                                    *
@@ -74,12 +51,13 @@ module chassiesBottomFull()
 * // передние крепление			              											*
 * //------------------------------------------------------------------------------------*
 *///
-module 1_clipsFront()
+module 1_clipsFront(iScale = 1)
 {
 	//верхнее крепление
 		translate(gRaysFront())
 			rotate(gRaysFrontAngle())
 				rotate([0,0,90])translate([0, -gRaysFrontLength() - motorESC[1],0])
+					scale([iScale, iScale, 1])
 					chassiesBottom_clipsRaysFull();
 }
 //-------------------------------------------------------------------------------------//
@@ -93,11 +71,12 @@ module 1_clipsFront()
 * // задние крепление			              											*
 * //------------------------------------------------------------------------------------*
 *///
-module 1_clipsRear()
+module 1_clipsRear(iScale = 1)
 {
 	translate(gRaysRear())
 		rotate(gRaysRearAngle())
 			rotate([0,0,90])translate([0, -gRaysRearLength() - motorESC[1],0])
+				scale([iScale, iScale, 1])
 				chassiesBottom_clipsRaysFull();
 }
 //-------------------------------------------------------------------------------------//
@@ -106,6 +85,63 @@ module 1_clipsRear()
 
 
 
+
+
+
+
+/* //===================================================================================*
+* //                                                                                    *
+* // отрисовка нижней части шасси внутрянка вырез										*
+* //------------------------------------------------------------------------------------*
+*///
+module chassiesBottomInside()
+{
+	iWidth = 120;
+	iHeight = 150;
+	iScale = 0.9;
+	
+	iWidthRear = gcShassiesBottom_frontWidth * iScale;
+	//chassiesBottomFull();
+	union()
+	{
+		//верхний срез
+		translate([-iWidth/2, 0,0]) cube([iWidth, iHeight,15]);
+		
+		difference()
+		{
+			translate([0,0, gcShassiesBottom_thickness])
+			union()
+			{
+				//верхнее крепление
+				hull()
+				{
+					1_clipsFront(iScale);
+					mirror([1,0,0])1_clipsFront(iScale);
+				}
+
+							
+				//нижнее крепление
+				hull()
+				{
+					1_clipsRear(iScale);
+					mirror([1,0,0]) 1_clipsRear(iScale);
+					
+					translate([-iWidthRear / 2, gcShassiesBottom_front, -gcRayClips_depth / 2]) cube([iWidthRear, 10, gcRayClips_depth]);
+				}
+			}
+			
+			//место под крепление лучей
+			1_clipsFront(); mirror([1,0,0])1_clipsFront();
+			1_clipsRear();  mirror([1,0,0]) 1_clipsRear();
+			
+			//место распорок усиливающих
+			translate([-2, 0, -15]) cube([4, 82, 20]);
+			translate([-1, 78, -15])rotate([0,0,45])cube([4, 80, 20]);
+			translate([-1, 78 + 4, -15])rotate([0,0,-45])cube([4, 80, 20]);
+		}
+	}
+}
+//-------------------------------------------------------------------------------------//
 
 
 
@@ -266,7 +302,8 @@ module chassies_mountScrewsInside()
 *///
 module chassiesBottom()
 {
-	translate([0,0, gcShassiesBottom_depth])difference()
+	translate([0,0, gcShassiesBottom_depth])
+	difference()
 	{
 		union()
 		{
